@@ -4,6 +4,7 @@ import cors from "cors";
 const app = express();
 import cookieParser from "cookie-parser";
 import { config } from "dotenv";
+import morgan from "morgan";
 config();
 
 // Middleware and route setups 
@@ -15,6 +16,9 @@ app.use(cors({
 }))
 
 app.use(cookieParser()); // Cookie parser middleware -- it converts the cookie header into javascript object
+
+app.use(morgan("dev")); // HTTP request logger middleware
+
 app.use("/ping", (req, res) => {
     res.status(200).json({ message: "pong" });
 });
