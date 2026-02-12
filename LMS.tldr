@@ -80,9 +80,9 @@
 		{
 			"id": "pointer:pointer",
 			"typeName": "pointer",
-			"x": 1361.6729191089248,
-			"y": 265.194240098729,
-			"lastActivityTimestamp": 1763241366640,
+			"x": 754.1699891220703,
+			"y": 1491.2544265554207,
+			"lastActivityTimestamp": 1763460712855,
 			"meta": {}
 		},
 		{
@@ -518,9 +518,9 @@
 			"typeName": "shape"
 		},
 		{
-			"x": -741.8821177573174,
-			"y": -67.18196226630877,
-			"z": 0.5173816637755786,
+			"x": 7.043813628126756,
+			"y": -939.107138519941,
+			"z": 0.3938222847527017,
 			"meta": {},
 			"id": "camera:page:page",
 			"typeName": "camera"
@@ -1601,8 +1601,8 @@
 			"typeName": "shape"
 		},
 		{
-			"x": -100.54973107745906,
-			"y": 1773.2732567810485,
+			"x": -113.76581989333232,
+			"y": 1467.421202075446,
 			"rotation": 0,
 			"isLocked": false,
 			"opacity": 1,
@@ -1616,7 +1616,7 @@
 				"font": "draw",
 				"textAlign": "start",
 				"autoSize": true,
-				"scale": 1.9914537640709058,
+				"scale": 2.7929521737300016,
 				"richText": {
 					"type": "doc",
 					"content": [
@@ -1642,8 +1642,10 @@
 		{
 			"editingShapeId": null,
 			"croppingShapeId": null,
-			"selectedShapeIds": [],
-			"hoveredShapeId": null,
+			"selectedShapeIds": [
+				"shape:qxX95RWNG-b4VZS4mZvTu"
+			],
+			"hoveredShapeId": "shape:qxX95RWNG-b4VZS4mZvTu",
 			"erasingShapeIds": [],
 			"hintingShapeIds": [],
 			"focusedGroupId": null,
@@ -2980,8 +2982,8 @@
 			"typeName": "shape"
 		},
 		{
-			"x": 659.2565931785057,
-			"y": 1736.5823815963472,
+			"x": 673.9144305617746,
+			"y": 1462.338255075807,
 			"rotation": 0,
 			"isLocked": false,
 			"opacity": 1,
@@ -3483,13 +3485,11 @@
 		{
 			"followingUserId": null,
 			"opacityForNextShape": 1,
-			"stylesForNextShape": {
-				"tldraw:color": "black"
-			},
+			"stylesForNextShape": {},
 			"brush": null,
 			"scribbles": [],
 			"cursor": {
-				"type": "cross",
+				"type": "default",
 				"rotation": 0
 			},
 			"isFocusMode": false,
@@ -3499,8 +3499,8 @@
 			"screenBounds": {
 				"x": 0,
 				"y": 0,
-				"w": 845.5554809570312,
-				"h": 292.77777099609375
+				"w": 671.111083984375,
+				"h": 518.8888549804688
 			},
 			"insets": [
 				false,
