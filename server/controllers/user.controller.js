@@ -1,5 +1,6 @@
 import AppError from "../utils/error.util.js";
 import User from "../models/user.model.js";
+import cloudinary from "cloudinary";
 
 const cookieOptions = {
   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
@@ -13,6 +14,8 @@ const register = async (req, res, next) => {
   if (!fullName || !email || !password) {
     return next(new AppError(400, "All fields are required")); // send error to error handling middleware
   }
+
+    let newUser;
   // check if user already exists or not
   const userExists = await User.findOne({ email });
   if (userExists) {
@@ -21,13 +24,13 @@ const register = async (req, res, next) => {
 
   // create new user when user does not exist
   else {
-    const newUser = await User.create({
+      newUser = await User.create({
       name: fullName,
       email,
       password,
       avatar: {
         public_id: "email",
-        secure_url: "avatar",
+        secure_url: "https://res.cloudinary.com/dzcmadjlq/image/upload/v1702054417/avatar/default-avatar_oqh5lq.png", //dumy avatar url;
       },
     });
   }
@@ -39,7 +42,32 @@ const register = async (req, res, next) => {
     );
   }
 
-  //TODO: file upload for avatar upload
+  // Handle file upload and update newUser.avatar with the uploaded file's details
+  // Implementation of file upload goes here
+  if (req.file) {
+  try {
+    const result = await cloudinary.v2.uploader.upload(req.file.path, {
+      folder: "lms",
+      width: 250,
+      height: 250,
+      gravity: "face",
+      crop: "fill",
+    });
+    if (result) {
+      newUser.avatar.public_id = result.public_id;
+      newUser.avatar.secure_url = result.secure_url;
+
+      // Remove the uploaded file from the server after successful upload to Cloudinary
+      fs.rm(`uploads/${req.file.filename}`);
+    }
+  }
+    catch(e){
+      console.error("Error uploading avatar:", e);
+       return next(new AppError(500, "Avatar upload failed, Please try again"));
+    }
+  }
+
+
   await newUser.save(); // save user to database
 
   // generate JWT token and set cookie so that user gets logged in after registration

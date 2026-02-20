@@ -32,6 +32,7 @@ app.use("/ping", (req, res) => {
 // Routes of 3 modules 
 app.use("/api/v1/users", userRoutes);
 
+
 // 404 handler - the last middleware
 app.use((req, res) => {
     res.status(404).json({ message: "OOPs! Route not found" });

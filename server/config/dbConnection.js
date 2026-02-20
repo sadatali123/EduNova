@@ -1,7 +1,7 @@
 import mongoose from "mongoose";    
-
 mongoose.set("strictQuery", true);
 
+// here we establish connection to MongoDB database using mongoose
 const connectionToDB = async () => {
     try {
         await mongoose.connect(process.env.MONGO_URI, {
