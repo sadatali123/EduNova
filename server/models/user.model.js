@@ -4,7 +4,8 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config();
-
+import crypto from "crypto";
+ 
 const userSchema = new Schema(
   {
     name: {
@@ -81,6 +82,13 @@ userSchema.methods = {
   comparePassword: async function(plainTextPassword) {
     return await bcrypt.compare(plainTextPassword, this.password);  
   },
+
+  generatePasswordResetToken: async function() {
+    const resetToken = crypto.randomBytes(20).toString("hex");
+    this.forgetPasswordToken = crypto.createHash("sha256").update(resetToken).digest("hex"); // store hashed version of token in database for security
+    this.forgetPasswordExpiry = Date.now() + 15 * 60 * 1000; //15 minutes from now
+    return resetToken;
+  }
 };
 
 const User = model("User", userSchema);

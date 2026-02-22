@@ -161,15 +161,46 @@ const getProfile = async (req, res) => {
   } catch(error) {
     return next(new AppError("Failed to fetch user profile, Please try again", 500));
   }
-
 };
 
+// Forgot password logic here
 const forgotPassword = async (req, res) => {
+  const{email} = req.body;
 
+  if(!email){
+    return next(new AppError("Email is required", 400));
+  }
+  const user = await User.findOne({email});
+
+  if(!user){
+    return next(new AppError("Email not registered", 400));
+  } 
+  const resetToken = await user.generatePasswordResetToken();
+
+  await user.save(); // save the reset token and expiry to database
+
+  const resetPaasswordUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`; 
+  
+  try {
+    // send email to user with reset link
+    // Implementation of email sending goes here
+    await sendEmail(email, sujbect, message);
+    res.status(200).json({
+      status: "success",
+      message: `Password reset email sent to ${email} successfully`,
+    });
+  } catch (error) {
+    // if email sending fails, reset the token and expiry fields in database
+    user.forgetPasswordToken = undefined;
+    user.forgetPasswordExpiry = undefined;
+    await user.save();
+    return next(new AppError("Failed to send password reset email, Please try again", 500));
+  }
 }
 
+ // Reset password logic here
 const resetPassword = async (req, res) => {
 
 }
 
-export { register, login, logout, getProfile };
+export { register, login, logout, getProfile, forgotPassword, resetPassword };
