@@ -1,6 +1,20 @@
 import AppError from "../utils/error.util.js";
 import User from "../models/user.model.js";
 import cloudinary from "cloudinary";
+import fs from "fs/promises";
+import dotenv from "dotenv";
+dotenv.config();
+
+// configure cloudinary using environment variables
+// helper to clean up noisy env values (quotes or spaces)
+const envValue = (v) => (v || "").toString().trim().replace(/^'+|'+$/g, "");
+
+cloudinary.v2.config({
+  cloud_name: envValue(process.env.CLOUDINARY_CLOUD_NAME),
+  api_key: envValue(process.env.CLOUDINARY_API_KEY),
+  api_secret: envValue(process.env.CLOUDINARY_API_SECRET),
+});
+
 
 const cookieOptions = {
   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
@@ -12,14 +26,14 @@ const register = async (req, res, next) => {
   const { fullName, email, password } = req.body;
 
   if (!fullName || !email || !password) {
-    return next(new AppError(400, "All fields are required")); // send error to error handling middleware
+    return next(new AppError("All fields are required", 400)); // send error to error handling middleware
   }
 
     let newUser;
   // check if user already exists or not
   const userExists = await User.findOne({ email });
   if (userExists) {
-    return next(new AppError(400, "User already exists with this email"));
+    return next(new AppError("User already exists with this email", 400));
   }
 
   // create new user when user does not exist
@@ -38,13 +52,15 @@ const register = async (req, res, next) => {
   // if user creation fails
   if (!newUser) {
     return next(
-      new AppError(500, "User registration failed, Please try again")
+      new AppError("User registration failed, Please try again", 500)
     );
   }
 
+  // profile picture upload logic here
   // Handle file upload and update newUser.avatar with the uploaded file's details
   // Implementation of file upload goes here
   if (req.file) {
+  console.log("File received:", req.file); 
   try {
     const result = await cloudinary.v2.uploader.upload(req.file.path, {
       folder: "lms",
@@ -58,17 +74,20 @@ const register = async (req, res, next) => {
       newUser.avatar.secure_url = result.secure_url;
 
       // Remove the uploaded file from the server after successful upload to Cloudinary
-      fs.rm(`uploads/${req.file.filename}`);
+      try {
+        await fs.promises.unlink(`uploads/${req.file.filename}`);
+      } catch (e) {
+        console.warn("Failed to delete temp upload:", e.message);
+      } 
     }
   }
     catch(e){
       console.error("Error uploading avatar:", e);
-       return next(new AppError(500, "Avatar upload failed, Please try again"));
+       return next(new AppError("Avatar upload failed, Please try again", 500));
     }
   }
-
-
   await newUser.save(); // save user to database
+
 
   // generate JWT token and set cookie so that user gets logged in after registration
   const token = await newUser.generateJWTToken();
@@ -84,19 +103,20 @@ const register = async (req, res, next) => {
   });
 };
 
+
 // Login logic here
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return next(new AppError(400, "All fields are required"));
+      return next(new AppError("All fields are required", 400));
     }
     // check if user exists
     const user = await User.findOne({ email }).select("+password");
 
     if (!user || !user.comparePassword(password)) {
-      return next(new AppError(401, "Email or password does not match"));
+      return next(new AppError("Email or password does not match", 401));
     }
     // generate JWT token and set cookie
     const token = await user.generateJWTToken(); 
@@ -109,9 +129,10 @@ const login = async (req, res) => {
       user,
     });
   } catch (error) {
-    return next(new AppError(500, "Login failed, Please try again"));
+    return next(new AppError("Login failed, Please try again", 500));
   }
 };
+
 
  // Logout logic here
 const logout = (req, res) => {
@@ -138,9 +159,17 @@ const getProfile = async (req, res) => {
     });
  
   } catch(error) {
-    return next(new AppError(500, "Failed to fetch user profile, Please try again"));
+    return next(new AppError("Failed to fetch user profile, Please try again", 500));
   }
 
 };
+
+const forgotPassword = async (req, res) => {
+
+}
+
+const resetPassword = async (req, res) => {
+
+}
 
 export { register, login, logout, getProfile };
