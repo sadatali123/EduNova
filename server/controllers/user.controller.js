@@ -4,6 +4,8 @@ import cloudinary from "cloudinary";
 import fs from "fs/promises";
 import dotenv from "dotenv";
 dotenv.config();
+import sendEmail from "../utils/SendEmail.js";
+import crypto from "crypto";
 
 // configure cloudinary using environment variables
 // helper to clean up noisy env values (quotes or spaces)
@@ -29,7 +31,7 @@ const register = async (req, res, next) => {
     return next(new AppError("All fields are required", 400)); // send error to error handling middleware
   }
 
-    let newUser;
+  let newUser;
   // check if user already exists or not
   const userExists = await User.findOne({ email });
   if (userExists) {
@@ -58,7 +60,6 @@ const register = async (req, res, next) => {
 
   // profile picture upload logic here
   // Handle file upload and update newUser.avatar with the uploaded file's details
-  // Implementation of file upload goes here
   if (req.file) {
   console.log("File received:", req.file); 
   try {
@@ -163,8 +164,9 @@ const getProfile = async (req, res) => {
   }
 };
 
+
 // Forgot password logic here
-const forgotPassword = async (req, res) => {
+const forgotPassword = async (req, res, next) => {
   const{email} = req.body;
 
   if(!email){
@@ -179,17 +181,19 @@ const forgotPassword = async (req, res) => {
 
   await user.save(); // save the reset token and expiry to database
 
-  const resetPaasswordUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`; 
+  const resetPassswordUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`; 
   
+  const subject = "Password Reset Request";
+  const message =`You can reset your password by clicking on the following link: <a href="${resetPassswordUrl}">Reset Password</a>. This link is valid for 15 minutes. If you did not request a password reset, please ignore this email.`;
   try {
     // send email to user with reset link
-    // Implementation of email sending goes here
-    await sendEmail(email, sujbect, message);
+    await sendEmail(email, subject, message);
     res.status(200).json({
       status: "success",
       message: `Password reset email sent to ${email} successfully`,
     });
   } catch (error) {
+    console.error("Forgot password email error:", error);
     // if email sending fails, reset the token and expiry fields in database
     user.forgetPasswordToken = undefined;
     user.forgetPasswordExpiry = undefined;
@@ -198,9 +202,112 @@ const forgotPassword = async (req, res) => {
   }
 }
 
- // Reset password logic here
-const resetPassword = async (req, res) => {
 
+ // Reset password logic here
+const resetPassword = async (req, res, next) => {
+  const { resetToken } = req.params;
+  const { newPassword } = req.body || {}; // handle missing body gracefully
+  const forgotPasswordToken = crypto.createHash("sha256").update(resetToken).digest("hex"); // hash the token received from request to compare with hashed token in database
+  const user = await User.findOne({
+    forgetPasswordToken: forgotPasswordToken, 
+    forgetPasswordExpiry: {$gt: Date.now()} // check if token is not expired
+  });
+
+  if(!user){
+    return next(new AppError("Invalid or expired password reset token", 400));
+  }
+  if (!newPassword) {
+    return next(new AppError("New password is required", 400)); 
+  }
+  user.password = newPassword;
+  user.forgetPasswordToken = undefined;
+  user.forgetPasswordExpiry = undefined;
+  await user.save(); // save updated user details to database
+  res.status(200).json({
+    status: "success",
+    message: "Password changed successfully, You can now log in with your new password",
+  });
 }
 
-export { register, login, logout, getProfile, forgotPassword, resetPassword };
+// Change password logic here, when user is logged in and wants to change password from profile settings
+const changePassword = async (req, res, next) => {
+  const{ oldPassword, newPassword } = req.body;
+  const { id } = req.user; // get user id from authenticated user details in request
+  
+  if(!oldPassword || !newPassword){
+    return next(new AppError("All fields are required", 400));
+  }
+
+  const user = await User.findById(id).select("+password"); // find user by id and select password field for comparison
+
+  if(!user){
+    return next(new AppError("User not found", 404));
+  }
+  const ispasswordValid = await user.comparePassword(oldPassword); // compare old password with stored password
+  if(!ispasswordValid){
+    return next(new AppError("Old password is incorrect", 401));
+  }
+  user.password = newPassword; // set new password
+  await user.save(); // save updated user details to database
+  user.password = undefined; 
+  res.status(200).json({
+    status: "success",
+    message: "Password changed successfully, You can now log in with your new password",
+  });
+}
+
+// Update user profile logic here, when user is logged in and wants to update profile details like name or avatar
+//here I am provided only name and avatar update options. Later I am going to add more fields like email, bio etc.
+const updateProfile = async (req, res, next) => {
+  const { fullName } = req.body;
+  const { id } = req.user.id; // get user id from authenticated user details in request
+ 
+  const user = await User.findById(id);  // find user by id to update profile details
+
+  if(!user){
+    return next(new AppError("User does not exist", 404));
+  }
+  if(req.fullName){
+    user.name = fullName; // update name 
+  }
+
+  //update profile picture  logic here
+  if (req.file) {
+    await cloudinary.v2.uploader.destroy(user.avatar.public_id); // delete existing avatar from cloudinary
+    
+    try {
+    const result = await cloudinary.v2.uploader.upload(req.file.path, {
+      folder: "lms",
+      width: 250,
+      height: 250,
+      gravity: "face",
+      crop: "fill",
+    });
+    if (result) {
+      newUser.avatar.public_id = result.public_id;
+      newUser.avatar.secure_url = result.secure_url;
+
+      // Remove the uploaded file from the server after successful upload to Cloudinary
+      try {
+        await fs.promises.unlink(`uploads/${req.file.filename}`);
+      } catch (e) {
+        console.warn("Failed to delete temp upload:", e.message);
+      } 
+    }
+  }
+    catch(e){
+      console.error("Error uploading avatar:", e);
+       return next(new AppError("Avatar upload failed, Please try again", 500));
+    }
+  }
+  await user.save(); // save updated user details to database
+ 
+  res.status(200).json({
+    status: "success",
+    message: "Profile updated successfully",
+    user,
+  });
+}
+  
+
+export { register, login, logout, getProfile, forgotPassword, resetPassword, changePassword, updateProfile };

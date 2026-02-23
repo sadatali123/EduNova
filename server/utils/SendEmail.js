@@ -1,4 +1,6 @@
 import nodemailer from "nodemailer";
+import dotenv from "dotenv";
+dotenv.config();
 
 // the actual sending of email is done here using nodemailer
 // create reusable transporter object using the default SMTP transport
@@ -8,7 +10,7 @@ const sendEmail = async function (email, subject, message) {
     port: process.env.SMTP_PORT,
     secure: false, // true for 465, false for other ports
     auth: {
-      user: process.env.SMTP_USERNAME,
+      user: process.env.SMTP_USER,
       pass: process.env.SMTP_PASSWORD,
     },
   });

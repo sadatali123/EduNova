@@ -10,6 +10,7 @@ import userRoutes from "./routes/user.routes.js";
 import errorMiddleware from "./middlewares/error.middleware.js";
 
 app.use(express.json()); // Body parser middleware
+app.use(express.urlencoded({ extended: true })); // Middleware to parse URL-encoded bodies (for form submissions)
 
 app.use(cors({
     origin: process.env.FRONTEND_URL, // frontend's origin
@@ -28,8 +29,7 @@ app.use("/ping", (req, res) => {
 });
 
 
-
-// Routes of 3 modules 
+//all requests starting with /api/v1/users 
 app.use("/api/v1/users", userRoutes);
 
 
