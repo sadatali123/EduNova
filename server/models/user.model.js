@@ -91,6 +91,6 @@ userSchema.methods = {
   }
 };
 
-const User = model("User", userSchema);
+const User = model("User", userSchema);  // model function is inbuilt in moongoose
 
 export default User;

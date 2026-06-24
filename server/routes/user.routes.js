@@ -3,7 +3,7 @@ const router = Router(); // Create a router instance
 import { register, login, logout, getProfile } from "../controllers/user.controller.js";
 import upload from "../middlewares/multer.middleware.js";
 import { forgotPassword, resetPassword, changePassword, updateProfile } from "../controllers/user.controller.js";
-
+import  {isLoggedIn}  from "../middlewares/auth.middleware.js";
 
 router.post("/register", upload.single("avatar"), register)
 router.post("/login", login)
@@ -14,4 +14,4 @@ router.post("/reset-password/:resetToken", resetPassword)
 router.post("/change-password", isLoggedIn, changePassword)
 router.put("/update-profile", isLoggedIn, upload.single("avatar"), updateProfile) // route for updating user profile details, protected route that requires authentication
 
-export default router; 
+export default router;

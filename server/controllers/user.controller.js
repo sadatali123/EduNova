@@ -106,7 +106,7 @@ const register = async (req, res, next) => {
 
 
 // Login logic here
-const login = async (req, res) => {
+const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
@@ -146,7 +146,6 @@ const logout = (req, res) => {
     message: "User logged out successfully",
   });
 };
-
 
 // Get user profile logic here 
 const getProfile = async (req, res) => {

@@ -7,6 +7,7 @@ import { config } from "dotenv";
 import morgan from "morgan";
 config();
 import userRoutes from "./routes/user.routes.js";
+import courseRoutes from "./routes/course.routes.js";
 import errorMiddleware from "./middlewares/error.middleware.js";
 
 app.use(express.json()); // Body parser middleware
@@ -29,8 +30,9 @@ app.use("/ping", (req, res) => {
 });
 
 
-//all requests starting with /api/v1/users 
-app.use("/api/v1/users", userRoutes);
+// Base Routes
+app.use("/api/v1/users", userRoutes); //base route for user related routes
+app.use("/api/v1/courses", courseRoutes); //base route for course related routes
 
 
 // 404 handler - the last middleware

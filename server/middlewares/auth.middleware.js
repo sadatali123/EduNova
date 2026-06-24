@@ -1,16 +1,51 @@
-const authenticated = (req, res, next) => {
-  const token = req.cookies.token;  
-    if (!token) {
-        return next(new AppError("Unauthorized, Please login to access this resource", 401));
-    }
+import AppError from "../utils/error.util.js"; 
+import jwt from "jsonwebtoken";
+import user from "../models/user.model.js";
+
+
+// Middleware to check if the user is logged in
+const isLoggedIn = async (req, res, next) => {
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY); // verify token and decode user details
-        req.user = decoded; // the meaning of this is that we are attaching the decoded user details to the request object so that it can be accessed in the next middleware or route handler
+        const token = req.cookies?.token || req.headers.authorization?.split(' ')[1];
+        if (!token) return next(new AppError('Unauthenticated, please login', 401));
+
+        let decoded;
+        try {
+            decoded = jwt.verify(token, process.env.JWT_SECRET);
+        } catch (err) {
+            return next(new AppError('Invalid or expired token. Please login again.', 401));
+        }
+
+        // If token payload contains an id, fetch fresh user from DB to ensure roles/status are current
+        if (decoded && decoded.id) {
+            const dbUser = await user.findById(decoded.id).select('-password');
+            if (!dbUser) return next(new AppError('User not found', 401));
+            req.user = dbUser;
+        } else {
+            req.user = decoded;
+        }
+
         next();
-    } catch (error) {
-        return next(new AppError("Token is invalid or expired, please try again", 401));
+    } catch (err) {
+        next(err);
+    }
+};
+
+
+// authorized rules for admin and user
+const authorizedRoles = (...roles) => (req, res, next) => {
+    const currentUserRole = req.user.role;
+
+    if (!roles.includes(currentUserRole)) {
+        return next(
+            new AppError(
+                "You do not have permission to access this route",
+                403
+            )
+        );
     }
 
-}
+    next();
+};
 
-export default authenticated;
+export { isLoggedIn, authorizedRoles };
