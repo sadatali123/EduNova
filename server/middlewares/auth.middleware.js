@@ -48,4 +48,17 @@ const authorizedRoles = (...roles) => (req, res, next) => {
     next();
 };
 
-export { isLoggedIn, authorizedRoles };
+
+
+ // authorizedSubscriber - Middleware to check if the user has an active subscription.
+ //If the user is not an admin and does not have an active subscription, it returns a "Forbidden" error.
+const authorizedSubscriber =async(req, res, next) =>{
+    const user = await User.findById(id)
+    const subscription = user.subscription.status
+    const currentUserRole = user.role
+    if (currentUserRole !== 'ADMIN' && subscription !== 'active') {
+        return next(createError(403, "please subscribe to access this"))
+    }
+}
+
+export { isLoggedIn, authorizedRoles, authorizedSubscriber };

@@ -1,4 +1,8 @@
-import mongoose from "mongoose";    
+import mongoose from "mongoose";
+import { config } from "dotenv";
+config(); 
+
+
 mongoose.set("strictQuery", true);
 
 // here we establish connection to MongoDB database using mongoose

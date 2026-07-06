@@ -1,7 +1,6 @@
 import { Router } from 'express' ;
 import { getAllCourses, getLecturesByCourseId, createCourse, updateCourse, removeCourse, addLectureToCourseById } from '../controllers/course.controller.js' ;
-import {isLoggedIn, authorizedRoles} from '../middlewares/auth.middleware.js' ;
-
+import {isLoggedIn, authorizedRoles, authorizedSubscriber } from '../middlewares/auth.middleware.js' ;
 import upload from '../middlewares/multer.middleware.js';
 const router = Router() ;
 
@@ -28,7 +27,7 @@ router.route('/')
  */
 
 router.route('/:id')
-    .get(isLoggedIn, getLecturesByCourseId)
+    .get(isLoggedIn, authorizedSubscriber, getLecturesByCourseId)
     .put(
         isLoggedIn, 
         authorizedRoles('ADMIN'),

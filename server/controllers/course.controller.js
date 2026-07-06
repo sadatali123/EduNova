@@ -190,7 +190,16 @@ const addLectureToCourseById = async (req, res, next) => {
       }
 };
 
+
 //Removes a lecture from a course by its ID and deletes the video from Cloudinary
+
+
+
+
+
+
+
+
 
 export {
   getAllCourses,

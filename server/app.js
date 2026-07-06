@@ -1,4 +1,4 @@
-// server setup file
+// this is the file where all the root path of the server application is defined.
 import express from "express";
 import cors from "cors";
 const app = express();
@@ -8,6 +8,7 @@ import morgan from "morgan";
 config();
 import userRoutes from "./routes/user.routes.js";
 import courseRoutes from "./routes/course.routes.js";
+import paymentRoutes from "./routes/payment.routes.js";
 import errorMiddleware from "./middlewares/error.middleware.js";
 
 app.use(express.json()); // Body parser middleware
@@ -30,9 +31,10 @@ app.use("/ping", (req, res) => {
 });
 
 
-// Base Routes
-app.use("/api/v1/users", userRoutes); //base route for user related routes
+// Base Routes   
+app.use("/api/v1/users", userRoutes); //base route for user related routes 
 app.use("/api/v1/courses", courseRoutes); //base route for course related routes
+app.use("/api/v1/payments", paymentRoutes); //base route for payment-- Whenever a request starts with /api/v1/payments, forward it to paymentRoutes for further handling.
 
 
 // 404 handler - the last middleware
