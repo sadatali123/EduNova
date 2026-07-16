@@ -55,3 +55,8 @@ content: ["./src/**/*.{html,js,jsx,ts,tsx}"]
  @tailwind components;
  @tailwind utilities;
  ```
+
+ 5. Install the required dependencies:
+ ```
+  npm install @reduxjs/toolkit react-redux react-router-dom react-icons react-chartjs-2 chart.js daisyui axios react-hot-toast @tailwindcss/line-clamp
+```
