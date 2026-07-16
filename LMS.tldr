@@ -13,19 +13,20 @@
 			"com.tldraw.instance_presence": 6,
 			"com.tldraw.pointer": 1,
 			"com.tldraw.shape": 4,
-			"com.tldraw.asset.bookmark": 2,
-			"com.tldraw.asset.image": 5,
+			"com.tldraw.user": 1,
+			"com.tldraw.asset.image": 6,
 			"com.tldraw.asset.video": 5,
+			"com.tldraw.asset.bookmark": 2,
 			"com.tldraw.shape.group": 0,
 			"com.tldraw.shape.text": 4,
 			"com.tldraw.shape.bookmark": 2,
-			"com.tldraw.shape.draw": 4,
+			"com.tldraw.shape.draw": 5,
 			"com.tldraw.shape.geo": 11,
-			"com.tldraw.shape.note": 10,
+			"com.tldraw.shape.note": 13,
 			"com.tldraw.shape.line": 5,
 			"com.tldraw.shape.frame": 1,
 			"com.tldraw.shape.arrow": 8,
-			"com.tldraw.shape.highlight": 3,
+			"com.tldraw.shape.highlight": 4,
 			"com.tldraw.shape.embed": 4,
 			"com.tldraw.shape.image": 5,
 			"com.tldraw.shape.video": 4,
@@ -480,7 +481,7 @@
 			"typeName": "binding"
 		},
 		{
-			"x": 1043.180466199198,
+			"x": 1060.1930879913189,
 			"y": 442.66368384476505,
 			"rotation": 0,
 			"isLocked": false,
@@ -491,13 +492,16 @@
 			"props": {
 				"color": "violet",
 				"size": "m",
-				"w": 231.01734924316406,
+				"w": 128.45824871203345,
 				"font": "draw",
 				"textAlign": "middle",
 				"autoSize": true,
 				"scale": 0.7033389173089702,
 				"richText": {
 					"type": "doc",
+					"attrs": {
+						"dir": "auto"
+					},
 					"content": [
 						{
 							"type": "paragraph",
@@ -507,7 +511,19 @@
 							"content": [
 								{
 									"type": "text",
-									"text": "view payment  list"
+									"text": "view payment "
+								}
+							]
+						},
+						{
+							"type": "paragraph",
+							"attrs": {
+								"dir": "auto"
+							},
+							"content": [
+								{
+									"type": "text",
+									"text": " list"
 								}
 							]
 						}
@@ -784,9 +800,9 @@
 			"typeName": "shape"
 		},
 		{
-			"x": 431.9319237463234,
-			"y": -4173.865779047284,
-			"z": 0.3569472628367457,
+			"x": 6482.026647268483,
+			"y": -2590.923235728919,
+			"z": 0.06937876885001494,
 			"meta": {},
 			"id": "camera:page:page",
 			"typeName": "camera"
@@ -865,6 +881,14 @@
 			"parentId": "page:page",
 			"index": "awxzqawl",
 			"typeName": "shape"
+		},
+		{
+			"name": "",
+			"color": "#BD54C6",
+			"imageUrl": "",
+			"meta": {},
+			"id": "user:arJXZmWBt81egz-OVpJbq",
+			"typeName": "user"
 		},
 		{
 			"x": 236.60872143386854,
@@ -1815,9 +1839,7 @@
 		{
 			"editingShapeId": null,
 			"croppingShapeId": null,
-			"selectedShapeIds": [
-				"shape:XnAbZvSXCeNPXeuKVxfbP"
-			],
+			"selectedShapeIds": [],
 			"hoveredShapeId": null,
 			"erasingShapeIds": [],
 			"hintingShapeIds": [],
@@ -2334,7 +2356,7 @@
 			"props": {
 				"color": "light-green",
 				"size": "m",
-				"w": 505.5312194824219,
+				"w": 1110.2941404890958,
 				"font": "draw",
 				"textAlign": "start",
 				"autoSize": true,
@@ -2353,7 +2375,7 @@
 							"content": [
 								{
 									"type": "text",
-									"text": "Fig:- How multer ans cloudinary works:-"
+									"text": "Fig:- How multer and cloudinary works:-"
 								}
 							]
 						}
@@ -3514,7 +3536,7 @@
 			"typeName": "shape"
 		},
 		{
-			"x": 440.5577981426577,
+			"x": 425.7878320171694,
 			"y": 464.6694184411147,
 			"rotation": 0,
 			"isLocked": false,
@@ -3525,13 +3547,16 @@
 			"props": {
 				"color": "yellow",
 				"size": "m",
-				"w": 115.96527099609375,
+				"w": 145.5052032470703,
 				"font": "draw",
 				"textAlign": "middle",
 				"autoSize": true,
 				"scale": 1,
 				"richText": {
 					"type": "doc",
+					"attrs": {
+						"dir": "auto"
+					},
 					"content": [
 						{
 							"type": "paragraph",
@@ -3542,6 +3567,30 @@
 								{
 									"type": "text",
 									"text": "SUbscribe"
+								}
+							]
+						},
+						{
+							"type": "paragraph",
+							"attrs": {
+								"dir": "auto"
+							},
+							"content": [
+								{
+									"type": "text",
+									"text": "Unsubscribe"
+								}
+							]
+						},
+						{
+							"type": "paragraph",
+							"attrs": {
+								"dir": "auto"
+							},
+							"content": [
+								{
+									"type": "text",
+									"text": "verify "
 								}
 							]
 						}
@@ -4166,14 +4215,11 @@
 		{
 			"followingUserId": null,
 			"opacityForNextShape": 1,
-			"stylesForNextShape": {
-				"tldraw:color": "yellow",
-				"tldraw:geo": "rectangle"
-			},
+			"stylesForNextShape": {},
 			"brush": null,
 			"scribbles": [],
 			"cursor": {
-				"type": "move",
+				"type": "nwse-resize",
 				"rotation": 0
 			},
 			"isFocusMode": false,
@@ -4183,8 +4229,8 @@
 			"screenBounds": {
 				"x": 0,
 				"y": 0,
-				"w": 848.3333129882812,
-				"h": 442.7777404785156
+				"w": 1018.333251953125,
+				"h": 518.8888549804688
 			},
 			"insets": [
 				false,

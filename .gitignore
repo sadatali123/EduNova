@@ -1,0 +1,9 @@
+# Ignore uploaded files directory
+/uploads/
+
+# Node module
+/node_modules/
+
+# Environment files
+.env
+
